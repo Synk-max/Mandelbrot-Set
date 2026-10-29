@@ -1,71 +1,90 @@
-const c = document.getElementById('canvas')
-const ctx = c.getContext("2d")
-const imgData = ctx.createImageData(360, 360)
-const startView = { x: -0.5, y: 0, scale: 3/360 }
-let view = { ...startView };
-c.style.border = "1px solid black"
+let centerX = -0.5;
+let centerY = 0;
+let size = 3    // the pictuer shows 3 math units
+let maxIterations =255;   //how long we test each point
+const width = 360;
+const height =360;
 
-function MathScale(px,py){
-    return {
-        x: view.x +(px-360/2)*view.scale,
-        y: view.y +(py-360/2)*view.scale,
-    }
+
+function setup(){
+    createCanvas(width,height);
+    pixelDensity(1);
+    noLoop();
+
+    let reset = createButton('Reset');
+    reset.mousePressed(resetView);
 }
 
-function imaginary(x1,y1){
-    var z=[0,0]
-    var c=[x1,y1]
-    for(var i=0;i<255;i++){
-        var z2 = [
-        z[0]*z[0] - z[1]*z[1],
-        z[0]*z[1]+z[0]*z[1]
-    ]
-        z=[z2[0]+c[0],
-        z2[1]+c[1]]
-
-        if(Math.sqrt(z[0]*z[0]+z[1]*z[1])>4){
-            return i
-         }
-        
+function resetView(){
+    centerX=-0.5
+    centerY=0;
+    size=3;
+    maxIterations=255;
+    redraw();
 }
-    return -1
-}
-var imgdata = ctx.createImageData(360, 360);
-for(var y=0;y<360;y++){
-    for(var x=0;x<360;x++){
-        var i = (x + y * 360) * 4;
 
-        var x1 = (x/360)*4-2;
-        var y1 = (y/360)*4-2;
-        var distance = Math.floor(Math.sqrt(x1*x1+y1*y1) * (255/2));
-        
-        const a = imaginary(x1,y1);
-        if(a===-1){
-            imgData.data[i+0] = 0
-            imgData.data[i+1] = 0
-            imgData.data[i+2] = 0
-           
-        } else{
-            imgData.data[i+0] = 0
-            imgData.data[i+1] = Math.min(a*20,255)
-            imgData.data[i+2] = 0
+function draw(){
+    loadPixels();
+    for(let x=0;x<width;x++){
+        for(let y=0;y<height;y++){
+            let cx = centerX + (x / width - 0.5) * size;
+            let cy = centerY + (y / height - 0.5) * size;
+
+            let a=0,ib=0;
+            var n=0;
+            while(n<maxIterations){
+                let za = a*a - ib*ib +cx;
+                let zb = 2*a*ib +cy;
+                a=za;
+                ib=zb;
+                if(za*za+zb*zb>4){
+                    break;
+                }
+                n++;
             
-        }
-        imgData.data[i+3] = 255
+            }
 
-    }
-}
-       
-function zoom_in(){
-    const m = MathScale(px,py)
-    view.scale *= factor
-    view.x = m.x - (px-180)*view.scale
-    view.y = m.y - (py-180)*view.scale
-    imaginary();
     
 
+            let r=0,g=0,b=0;
+            if(n<maxIterations){
+                r=(n*0)%256;
+                g=(n*9)%256;
+                b=(n*20)%256;
+            }
+            //color for the pixel,width or height can be used
+            let spot = (x+y*width) *4;
+            pixels[spot]=r;
+            pixels[spot+1]=g;
+            pixels[spot+2]=b;
+            pixels[spot +3]=255;
+        }
+    }    
+
+updatePixels();
+console.log('done drawing');
+}
+
+function mousePressed(){
+    console.log('clicked', mouseX, mouseY);     // add this line
+    if (mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height) {
+        return;
+    }
+
+    let clickX = centerX + (mouseX / width - 0.5) * size;
+    let clickY = centerY + (mouseY / height - 0.5) * size;
+
+    size /= 2;
+    maxIterations += 30;
+
+    centerX = clickX;
+    centerY = clickY;
+    console.log('click', mouseX, mouseY, '-> center', centerX, centerY, 'size', size);
+    
+    redraw();
 
 }
+
 
 
 

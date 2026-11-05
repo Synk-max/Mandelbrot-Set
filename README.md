@@ -1,6 +1,6 @@
-Deep zoom of the Mandelbrot set 
+Mandelbrot Set Zoom
 
-A web page that draws the Mandelbrot set, a shape with infinite detail. Click the picture to zoom in, or choose a random spot to begin with. The more you zoom, the more detail appears. I made it for the Fractal card
+A web page that draws the Mandelbrot set, a shape with infinite detail as you zoom deeper. Click the picture to zoom in, or choose a random spot to begin with. The more you zoom, the more detail appears.
 
 Live demo:https://synk-max.github.io/Mandelbrot-Set
 
@@ -16,12 +16,6 @@ It needs an internet connection, because the p5.js library loads from a CDN (a w
 
 Tip: Beware of the lag that follows through the zoom. click along the colored edge of the shape. Zooming into the solid black middle only shows more black.
 
-How it works:
-For every pixel in the canvas, the program turns the pixel's position into a point c on the math plane.
-Start with z = 0, then repeat z = z * z + c.
-If za*za + zb*zb >4. The series stops. Then the steps are counted. If n reaches maxIterations the point never escaped, so the pixel stays black.
-
-The number of steps tested grows as you zoom in, so deeper views keep their detail.
 
 Limits
 Regular 64-bit numbers have about 16 digits. Past roughly 10^14 times zoom, the picture turns blocky.

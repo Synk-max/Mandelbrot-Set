@@ -1,6 +1,7 @@
 Mandelbrot Set Zoom
 
 A web page that draws the Mandelbrot set, a shape with infinite detail as you zoom deeper. Click the picture to zoom in, or choose a random spot to begin with. The more you zoom, the more detail appears.
+Its an interactive web renderer where you click to zoom in.
 
 Live demo:https://synk-max.github.io/Mandelbrot-Set
 
